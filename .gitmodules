@@ -28,3 +28,6 @@
 [submodule "keyboards/ergohaven/remnant/keymaps/sunaku/getreuer"]
 	path = keyboards/ergohaven/remnant/keymaps/sunaku/getreuer
 	url = https://github.com/getreuer/qmk-keymap
+[submodule "keyboards/ergohaven/remnant/keymaps/sk/getreuer"]
+	path = keyboards/ergohaven/remnant/keymaps/sk/getreuer
+	url = https://github.com/getreuer/qmk-keymap

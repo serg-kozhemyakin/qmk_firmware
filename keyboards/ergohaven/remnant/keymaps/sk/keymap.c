@@ -1,27 +1,57 @@
 #include QMK_KEYBOARD_H
 
+#include "print.h"
+
 #include "layers.h"
 #include "features/caps_word.h"
 #include "features/select_word.h"
 
-static layer_state_t current_layer_state = 0;
+static layer_state_t system_language_id = _QWERTY;
+static layer_state_t last_used_english_layer = _QWERTY;
+static layer_state_t current_layer_state = _QWERTY;
 
 enum custom_keycodes {
     SELECT_WORD = SAFE_RANGE,
-    // Other custom keys...
     STICKY_LAYER_TOGGLE,
+    T_ENGR, // toggle engram layout on/off
 };
 
+#define RUS_ENG TG(_RUSSIAN)
+
+// qwerty homerow
 #define L_GUI_T LGUI_T(KC_A)
 #define L_ALT_T LALT_T(KC_S)
 #define L_CTL_T LCTL_T(KC_D)
 #define L_SFT_T LSFT_T(KC_F)
 
-#define R_GUI_T RGUI_T(KC_J)
-#define R_ALT_T RALT_T(KC_K)
-#define R_CTL_T RCTL_T(KC_L)
-#define R_SFT_T RSFT_T(KC_SCLN)
+#define R_SFT_T RSFT_T(KC_J)
+#define R_CTL_T RCTL_T(KC_K)
+#define R_ALT_T RALT_T(KC_L)
+#define R_GUI_T RGUI_T(KC_SCLN)
 
+// russian homerow
+#define LRGUI_T LGUI_T(RU_EF)
+#define LRALT_T LALT_T(RU_YERU)
+#define LRCTL_T LCTL_T(RU_VE)
+#define LRSFT_T LSFT_T(RU_A)
+
+#define RRSFT_T RSFT_T(RU_O)
+#define RRCTL_T RCTL_T(RU_EL)
+#define RRALT_T RALT_T(RU_DE)
+#define RRGUI_T RGUI_T(RU_ZHE)
+
+// engram homerow
+#define LEGUI_T LGUI_T(KC_C)
+#define LEALT_T LALT_T(KC_I)
+#define LECTL_T LCTL_T(KC_E)
+#define LESFT_T LSFT_T(KC_A)
+
+#define RESFT_T RGUI_T(KC_H)
+#define RECTL_T RALT_T(KC_T)
+#define REALT_T RCTL_T(KC_S)
+#define REGUI_T RSFT_T(KC_N)
+
+// other layers
 #define LT_CURS LT(_CURSOR,KC_BSPC)
 #define LT_NUMB LT(_NUMBERS,KC_DEL)
 #define LT_FUNC LT(_FKEYS,KC_ESC)
@@ -29,44 +59,153 @@ enum custom_keycodes {
 #define LT_MOUS LT(_MOUSE,KC_TAB)
 #define LT_SYMB LT(_SYMBOLS,KC_SPC)
 
+#define STLT STICKY_LAYER_TOGGLE
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_QWERTY] = LAYOUT_5x6(
-                             KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS ,
-                             KC_BSLS, KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   ,          KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_EQL  ,
-                             CW_TOGG, L_GUI_T, L_ALT_T, L_CTL_T, L_SFT_T, KC_G   ,          KC_H   , R_SFT_T, R_CTL_T, R_ALT_T, R_GUI_T, KC_QUOT ,
-                             KC_LSFT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,          KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RSFT ,
+                             KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS,
+                             KC_BSLS, KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   ,          KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_EQL ,
+                             CW_TOGG, L_GUI_T, L_ALT_T, L_CTL_T, L_SFT_T, KC_G   ,          KC_H   , R_SFT_T, R_CTL_T, R_ALT_T, R_GUI_T, KC_QUOT,
+                             KC_LSFT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,          KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RSFT,
                                                KC_PGUP, KC_PGDN,                                              KC_LBRC, KC_RBRC,
                                                           LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
                            ),
-	[1] = LAYOUT_5x6_5(KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_EQL, KC_BSLS, KC_B, KC_Y, KC_O, KC_U, KC_QUOT, KC_SCLN, KC_L, KC_D, KC_W, KC_V, KC_Z, CW_TOGG, LGUI_T(KC_C), LALT_T(KC_I), LCTL_T(KC_E), LSFT_T(KC_A), KC_COMM, KC_DOT, LSFT_T(KC_H), LCTL_T(KC_T), LALT_T(KC_S), LGUI_T(KC_N), KC_Q, KC_LSFT, KC_G, KC_X, KC_J, KC_K, KC_MINS, KC_SLSH, KC_R, KC_M, KC_F, KC_P, KC_RSFT, KC_PGUP, KC_PGDN, LT(10,KC_BSPC), LT(11,KC_DEL), LT(12,KC_ESC), LT(15,KC_ENT), LT(14,KC_TAB), LT(13,KC_SPC), KC_LBRC, KC_RBRC, KC_LEFT, KC_RGHT, KC_DOWN, KC_UP),
-	[2] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[3] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[4] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[5] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[6] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[7] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[8] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[9] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
-	[10] = LAYOUT_5x6_5(QK_BOOT, KC_NO, KC_NO, KC_NO, KC_NO, EE_CLR, KC_NO, KC_NO, RCS(KC_Z), RCS(KC_Y), KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, LCTL(KC_X), KC_BSPC, LCTL(KC_Z), LCTL(KC_Y), KC_DEL, KC_INS, KC_CAPS, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, LCTL(KC_C), KC_LEFT, KC_UP, KC_DOWN, KC_RGHT, KC_PSCR, STICKY_LAYER_TOGGLE, KC_NO, KC_NO, KC_NO, KC_NO, DB_TOGG, LCTL(KC_V), KC_HOME, KC_PGUP, KC_PGDN, KC_END, LCTL(KC_H), KC_NO, KC_NO, KC_TRNS, KC_NO, KC_NO, LCTL(KC_L), LCTL(KC_A), SELECT_WORD, LCTL(KC_F), LCTL(KC_G), KC_NO, KC_NO, KC_TRNS, KC_TRNS),
-	[11] = LAYOUT_5x6_5(QK_BOOT, KC_NO, KC_NO, KC_NO, KC_NO, EE_CLR, KC_TILD, KC_CIRC, KC_HASH, KC_DLR, KC_AT, KC_EXLM, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_PERC, KC_7, KC_8, KC_9, KC_COLN, KC_LT, KC_NUM, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, KC_PPLS, KC_4, KC_5, KC_6, KC_PMNS, KC_GT, STICKY_LAYER_TOGGLE, KC_NO, KC_NO, KC_NO, KC_NO, DB_TOGG, KC_PAST, KC_1, KC_2, KC_3, KC_PSLS, KC_PEQL, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_NO, KC_COMM, KC_DOT, KC_0, KC_LPRN, KC_RPRN, KC_NO, KC_NO, KC_PENT, KC_TAB),
-	[12] = LAYOUT_5x6_5(QK_BOOT, KC_NO, KC_NO, KC_NO, KC_NO, EE_CLR, KC_MSEL, KC_MPLY, KC_MPRV, KC_MNXT, KC_MSTP, KC_EJCT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_WHOM, KC_F7, KC_F8, KC_F9, KC_F10, KC_F13, KC_SCRL, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, KC_CALC, KC_F4, KC_F5, KC_F6, KC_F11, KC_F14, STICKY_LAYER_TOGGLE, KC_NO, KC_NO, KC_NO, KC_NO, DB_TOGG, KC_MYCM, KC_F1, KC_F2, KC_F3, KC_F12, KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, KC_BRID, KC_BRIU, KC_NO, KC_NO, KC_TRNS, KC_TRNS),
-	[13] = LAYOUT_5x6_5(KC_TILD, KC_COMM, KC_LPRN, KC_RPRN, KC_SCLN, KC_QUES, EE_CLR, KC_NO, KC_NO, KC_NO, KC_NO, QK_BOOT, KC_AT, KC_LCBR, KC_DQUO, KC_QUOT, KC_RCBR, KC_DOT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_HASH, KC_CIRC, KC_EQL, KC_UNDS, KC_DLR, KC_ASTR, KC_NO, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, KC_NO, KC_EXLM, KC_LT, KC_PIPE, KC_MINS, KC_GT, KC_SLSH, DB_TOGG, KC_NO, KC_NO, KC_NO, KC_NO, STICKY_LAYER_TOGGLE, KC_AMPR, KC_PLUS, KC_BSLS, KC_COLN, KC_PERC, KC_NO, KC_NO, KC_TRNS, KC_LBRC, KC_RBRC, KC_COMM, KC_DOT, KC_NO, KC_NO),
-	[14] = LAYOUT_5x6_5(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, EE_CLR, KC_NO, KC_NO, KC_NO, KC_NO, QK_BOOT, KC_NO, KC_ACL2, KC_WH_L, KC_MS_U, KC_WH_R, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_ACL0, KC_MS_L, KC_MS_D, KC_MS_R, KC_NO, KC_NO, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, KC_NO, KC_NO, KC_ACL1, LCTL(KC_RCTL), KC_BTN4, KC_BTN5, KC_NO, DB_TOGG, KC_NO, KC_NO, KC_NO, KC_NO, STICKY_LAYER_TOGGLE, KC_WH_U, KC_WH_D, KC_BTN1, KC_BTN2, KC_BTN3, KC_NO, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_NO, KC_NO),
-	[15] = LAYOUT_5x6_5(KC_PWR, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, EE_CLR, KC_NO, KC_NO, KC_NO, KC_NO, QK_BOOT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, DB_TOGG, KC_NO, KC_NO, KC_NO, KC_NO, STICKY_LAYER_TOGGLE, KC_WAKE, KC_SLEP, LALT(KC_PSCR), KC_PAUS, KC_NO, KC_TRNS, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO, KC_NO)
+	[_ENGRAM] = LAYOUT_5x6(
+                             KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_EQL ,
+                             KC_BSLS, KC_B   , KC_Y   , KC_O   , KC_U   , KC_QUOT,          KC_SCLN, KC_L   , KC_D   , KC_W   , KC_V   , KC_Z   ,
+                             CW_TOGG, LEGUI_T, LEALT_T, LECTL_T, LESFT_T, KC_COMM,          KC_DOT , RESFT_T, RECTL_T, REALT_T, REGUI_T, KC_Q   ,
+                             KC_LSFT, KC_G   , KC_X   , KC_J   , KC_K   , KC_MINS,          KC_SLSH, KC_R   , KC_M   , KC_F   , KC_P   , KC_RSFT,
+                                               KC_PGUP, KC_PGDN,                                              KC_LBRC, KC_RBRC,
+                                                          LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
+                           ),
+	[_RUSSIAN] = LAYOUT_5x6(
+                             RU_HARD, RU_1   , RU_2   , RU_3   , RU_4   , RU_5   ,          RU_6   , RU_7   , RU_8   , RU_9   , RU_0   , RU_MINS,
+                             RU_BSLS, RU_SHTI, RU_TSE , RU_U   , RU_KA  , RU_IE  ,          RU_EN  , RU_GHE , RU_SHA , RU_SHCH, RU_ZE  , RU_EQL ,
+                             CW_TOGG, LRGUI_T, LRALT_T, LRCTL_T, LRSFT_T, RU_PE  ,          RU_ER  , RRSFT_T, RRCTL_T, RRALT_T, RRGUI_T, RU_E   ,
+                             KC_LSFT, RU_YA  , RU_CHE , RU_ES  , RU_EM  , RU_I   ,          RU_TE  , RU_SOFT, RU_BE  , RU_YU  , RU_SLSH, KC_RSFT,
+                                               KC_PGUP, KC_PGDN,                                              RU_YO  , RU_HA  ,
+                                                          LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
+                           ),
+	[_CURSOR] = LAYOUT_5x6(
+                             QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          XXXXXXX   , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX   , XXXXXXX,
+                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          LCTL(KC_X), KC_BSPC, KC_UP  , KC_DEL , LCTL(KC_Z), KC_INS ,
+                             RUS_ENG, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          LCTL(KC_C), KC_LEFT, KC_DOWN, KC_RGHT, LCTL(KC_Y), KC_PSCR,
+                             STLT   , XXXXXXX, XXXXXXX, XXXXXXX, KC_APP , DB_TOGG,          LCTL(KC_V), KC_HOME, KC_PGUP, KC_END , LCTL(KC_F), LCTL(KC_H),
+                                               XXXXXXX, XXXXXXX,                                                 KC_PGDN, LCTL(KC_G),
+                                                          _______, XXXXXXX, XXXXXXX,     LCTL(KC_L), LCTL(KC_A), SELECT_WORD
+                           ),
+	[_NUMBERS] = LAYOUT_5x6(
+                             QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          KC_TILD, KC_CIRC, KC_HASH, KC_DLR, KC_AT  , KC_EXLM,
+                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          KC_PERC, KC_7   , KC_8   , KC_9  , KC_COLN, KC_LT,
+                             KC_NUM , KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          KC_PPLS, KC_4   , KC_5   , KC_6  , KC_PMNS, KC_GT,
+                             STLT   , XXXXXXX, KC_APP , XXXXXXX, XXXXXXX, DB_TOGG,          KC_PAST, KC_1   , KC_2   , KC_3  , KC_PSLS, KC_PEQL,
+                                               XXXXXXX, XXXXXXX,                                              KC_LPRN, KC_RPRN,
+                                                          XXXXXXX, _______, XXXXXXX,     KC_COMM, KC_DOT, KC_0
+                           ),
+	[_FKEYS] = LAYOUT_5x6(
+                             QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          KC_MSEL, KC_MPLY, KC_MPRV, KC_MNXT, KC_MSTP, KC_EJCT,
+                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          KC_WHOM, KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F13,
+                             KC_SCRL, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          KC_CALC, KC_F4  , KC_F5  , KC_F6  , KC_F11 , KC_F14,
+                             STLT   , XXXXXXX, KC_APP , XXXXXXX, XXXXXXX, DB_TOGG,          KC_MYCM, KC_F1  , KC_F2  , KC_F3  , KC_F12 , KC_F15,
+                                               XXXXXXX, XXXXXXX,                                              KC_BRID, KC_BRIU,
+                                                          XXXXXXX, XXXXXXX, _______,     KC_MUTE, KC_VOLD, KC_VOLU
+                            ),
+	[_SYMBOLS] = LAYOUT_5x6(
+                             KC_TILD, KC_COMM, KC_LPRN, KC_RPRN, KC_SCLN, KC_QUES,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                             KC_AT  , KC_LCBR, KC_DQUO, KC_QUOT, KC_RCBR, KC_DOT ,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                             KC_HASH, KC_CIRC, KC_EQL , KC_UNDS, KC_DLR , KC_ASTR,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
+                             KC_EXLM, KC_LT  , KC_PIPE, KC_MINS, KC_GT  , KC_SLSH,          DB_TOGG, XXXXXXX, XXXXXXX, KC_APP , XXXXXXX, STLT   ,
+                                               KC_AMPR, KC_PLUS,                                              KC_LBRC, KC_RBRC,
+                                                          KC_BSLS, KC_COLN, KC_PERC,     XXXXXXX, XXXXXXX, _______
+                            ),
+	[_MOUSE] = LAYOUT_5x6(
+                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                             XXXXXXX, KC_ACL2, KC_WH_L, KC_MS_U, KC_WH_R, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                             XXXXXXX, KC_ACL0, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
+                             XXXXXXX, KC_ACL1, XXXXXXX, KC_BTN4, KC_BTN5, XXXXXXX,          DB_TOGG, XXXXXXX, XXXXXXX, KC_APP , XXXXXXX, STLT   ,
+                                               KC_WH_U, KC_WH_D,                                              XXXXXXX, XXXXXXX,
+                                                          KC_BTN1, KC_BTN2, KC_BTN3,     XXXXXXX, _______, XXXXXXX
+                            ),
+	[_SYS] = LAYOUT_5x6(
+                             KC_PWR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
+                             T_ENGR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          DB_TOGG, XXXXXXX, XXXXXXX, KC_APP , XXXXXXX, STLT   ,
+                                               KC_WAKE, KC_SLEP,                                              XXXXXXX, XXXXXXX,
+                                                          XXXXXXX, KC_PAUS, XXXXXXX,     _______, XXXXXXX, XXXXXXX
+                            )
 };
 
-#if defined(ENCODER_ENABLE) && defined(ENCODER_MAP_ENABLE)
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
+void switch_system_layout(uint8_t the_layer) {
+  if ((system_language_id == _RUSSIAN && the_layer != _RUSSIAN) || (system_language_id!=_RUSSIAN && the_layer == _RUSSIAN)) {
+    const uint8_t mods = get_mods() | get_oneshot_mods();
+    const bool is_shift_pressed = mods & MOD_MASK_SHIFT;
+    if (is_shift_pressed) {
+      // here goes the workaround, since Shift+Caps turns Caps on, not switches the language
+      unregister_code(KC_LSFT);
+      tap_code(KC_CAPS);
+      register_code(KC_LSFT);
+    } else {
+      tap_code(KC_CAPS);
+    }
+    system_language_id = the_layer;
+  }
+}
 
-};
-#endif // defined(ENCODER_ENABLE) && defined(ENCODER_MAP_ENABLE)
-
-
+layer_state_t layer_state_set_user(layer_state_t state) {
+    current_layer_state=state;
+    return state;
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if (!process_caps_word(keycode, record)) { return false; }
     if (!process_select_word(keycode, record, SELECT_WORD)) { return false; }
-    // Your macros ...
+
+    bool is_ru_layer = IS_LAYER_ON_STATE(current_layer_state, _RUSSIAN);
+    if (is_ru_layer) {
+        switch (keycode) {
+        case LT_CURS:
+        case LT_FUNC:
+        case LT_MOUS:
+        case LT_NUMB:
+        case LT_SYMB:
+        case LT_SYST:
+            if (record->event.pressed) {
+                switch_system_layout(last_used_english_layer);
+            } else {
+                switch_system_layout(_RUSSIAN);
+            }
+            break;
+        }
+    }
+
+    switch (keycode) {
+    // KC_CAPS change layout from latest used english to russian and back.
+    case RUS_ENG:
+        if (!record->event.pressed) {
+            if (is_ru_layer) {
+                switch_system_layout(last_used_english_layer);
+            } else {
+                switch_system_layout(_RUSSIAN);
+            }
+        }
+        break;
+    case T_ENGR:
+        if (!record->event.pressed) {
+            if (last_used_english_layer==_QWERTY) {
+                switch_system_layout(_ENGRAM);
+                last_used_english_layer=_ENGRAM;
+                layer_off(_QWERTY);
+                layer_on(_ENGRAM);
+            } else {
+                switch_system_layout(_QWERTY);
+                last_used_english_layer=_QWERTY;
+                layer_off(_ENGRAM);
+                layer_on(_QWERTY);
+            }
+        }
+        break;
+    }
 
     // handle sticky holding of Miryoku thumb cluster layer-taps as toggles
     if (keycode == STICKY_LAYER_TOGGLE && record->event.pressed) {
@@ -81,6 +220,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 //----------------------------------------------------------------------------
 
 void keyboard_post_init_user(void) {
+    // Customise these values to desired behaviour
+    debug_enable=true;
+    /* debug_matrix=true; */
+    /* debug_keyboard=true; */
+    //debug_mouse=true;
+
     // https://docs.qmk.fm/#/feature_rgb_matrix?id=rgb-matrix-effects
     // set initial effect on keyboard start; ignore what's in EEPROM!
     rgb_matrix_mode_noeeprom(
@@ -145,12 +290,7 @@ void caps_word_set_user(bool active) {
 }
 
 // https://qmk.github.io/qmk_mkdocs/master/en/feature_rgb_matrix/#indicator-examples
-#ifdef VIAL_ENABLE
-  void
-#else
-  bool
-#endif
-rgb_matrix_indicators_user(void) {
+bool rgb_matrix_indicators_user(void) {
 
     uint8_t mods = get_mods();
 
@@ -191,7 +331,7 @@ rgb_matrix_indicators_user(void) {
     }
 
     switch (get_highest_layer(layer_state|default_layer_state)) {
-        case 10:
+        case _CURSOR:
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME,  LEFT_THUMB_COLOR);
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME,  LEFT_THUMB_COLOR);
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, RGB_OFF);
@@ -200,7 +340,7 @@ rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_OUTER, RGB_OFF);
             break;
 
-        case 11:
+        case _NUMBERS:
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, LEFT_THUMB_COLOR);
@@ -209,7 +349,7 @@ rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_OUTER, RGB_OFF);
             break;
 
-        case 12:
+        case _FKEYS:
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, RGB_OFF);
@@ -218,7 +358,7 @@ rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_OUTER, LEFT_THUMB_COLOR);
             break;
 
-        case 13:
+        case _SYMBOLS:
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME,  RIGHT_THUMB_COLOR);
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME,  RIGHT_THUMB_COLOR);
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, RGB_OFF);
@@ -227,7 +367,7 @@ rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_OUTER, RGB_OFF);
             break;
 
-        case 14:
+        case _MOUSE:
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, RIGHT_THUMB_COLOR);
@@ -236,7 +376,7 @@ rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_OUTER, RGB_OFF);
             break;
 
-        case 15:
+        case _SYS:
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME,  RGB_OFF);
             rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, RGB_OFF);
@@ -255,12 +395,12 @@ rgb_matrix_indicators_user(void) {
             break;
     }
 
-    if (IS_LAYER_ON(7)) {
+    if (IS_LAYER_ON(_ENGRAM)) {
         rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, EXTRA_LAYER_COLOR);
         rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_INNER, EXTRA_LAYER_COLOR);
     }
 
-    if (IS_LAYER_ON(8)) {
+    if (IS_LAYER_ON(_RUSSIAN)) {
         rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME, EXTRA_LAYER_COLOR);
         rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME, EXTRA_LAYER_COLOR);
     }
@@ -278,7 +418,5 @@ rgb_matrix_indicators_user(void) {
       rgb_matrix_set_color(RIGHT_CAPS_LOCK, RGB_OFF);
     }
 
-#ifndef VIAL_ENABLE
     return true;
-#endif
 }

@@ -82,7 +82,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              RU_HARD, RU_1   , RU_2   , RU_3   , RU_4   , RU_5   ,          RU_6   , RU_7   , RU_8   , RU_9   , RU_0   , RU_MINS,
                              RU_BSLS, RU_SHTI, RU_TSE , RU_U   , RU_KA  , RU_IE  ,          RU_EN  , RU_GHE , RU_SHA , RU_SHCH, RU_ZE  , RU_EQL ,
                              CW_TOGG, LRGUI_T, LRALT_T, LRCTL_T, LRSFT_T, RU_PE  ,          RU_ER  , RRSFT_T, RRCTL_T, RRALT_T, RRGUI_T, RU_E   ,
-                             KC_LSFT, RU_YA  , RU_CHE , RU_ES  , RU_EM  , RU_I   ,          RU_TE  , RU_SOFT, RU_BE  , RU_YU  , RU_SLSH, KC_RSFT,
+                             KC_LSFT, RU_YA  , RU_CHE , RU_ES  , RU_EM  , RU_I   ,          RU_TE  , RU_SOFT, RU_BE  , RU_YU  , RU_DOT , KC_RSFT,
                                                KC_PGUP, KC_PGDN,                                              RU_YO  , RU_HA  ,
                                                           LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
                            ),
@@ -163,6 +163,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
     bool is_ru_layer = IS_LAYER_ON_STATE(current_layer_state, _RUSSIAN);
     if (is_ru_layer) {
+        int switch_to_english = 0;
         switch (keycode) {
         case LT_CURS:
         case LT_FUNC:
@@ -170,12 +171,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         case LT_NUMB:
         case LT_SYMB:
         case LT_SYST:
+            switch_to_english=1;
+            break;
+        default:
+            const uint8_t mods = get_mods() | get_oneshot_mods();
+            if(mods & MOD_MASK_ALT || mods & MOD_MASK_CTRL || mods & MOD_MASK_GUI) {
+                switch_to_english=1;
+            }
+            break;
+        }
+        if (switch_to_english) {
             if (record->event.pressed) {
                 switch_system_layout(last_used_english_layer);
             } else {
                 switch_system_layout(_RUSSIAN);
             }
-            break;
         }
     }
 

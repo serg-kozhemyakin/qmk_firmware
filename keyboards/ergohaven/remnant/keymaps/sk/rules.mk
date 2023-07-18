@@ -16,7 +16,9 @@ CONSOLE_ENABLE = no
 # SRC += features/custom_shift_keys.c
 SRC += features/caps_word.c
 SRC += features/select_word.c
+SRC += features/mouse_turbo_click.c
 
+MOUSEKEY_ENABLE = yes
 #-----------------------------------------------------------------------------
 # sunaku
 #-----------------------------------------------------------------------------

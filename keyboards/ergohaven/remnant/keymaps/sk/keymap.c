@@ -5,15 +5,19 @@
 #include "layers.h"
 #include "features/caps_word.h"
 #include "features/select_word.h"
+#include "features/mouse_turbo_click.h"
 
-static layer_state_t system_language_id = _QWERTY;
 static layer_state_t last_used_english_layer = _QWERTY;
-static layer_state_t current_layer_state = _QWERTY;
+static layer_state_t last_used_english_layout = _QWERTY;
+static int temporary_switch_off_russian_layer = 0;
+static int temporary_switch_off_gaming_layer = 0;
 
 enum custom_keycodes {
     SELECT_WORD = SAFE_RANGE,
+    TURBO,
     STICKY_LAYER_TOGGLE,
     T_ENGR, // toggle engram layout on/off
+    T_GAME, // toggle gaming layer on/off
 };
 
 #define RUS_ENG TG(_RUSSIAN)
@@ -85,11 +89,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              KC_LSFT, RU_YA  , RU_CHE , RU_ES  , RU_EM  , RU_I   ,          RU_TE  , RU_SOFT, RU_BE  , RU_YU  , RU_DOT , KC_RSFT,
                                                KC_PGUP, KC_PGDN,                                              RU_YO  , RU_HA  ,
                                                           LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
-                           ),
+                            ),
+    /*
+	[_RUSENGR] = LAYOUT_5x6(
+                             RU_HARD, RU_1   , RU_2   , RU_3   , RU_4   , RU_5   ,          RU_6   , RU_7   , RU_8   , RU_9   , RU_0   , RU_MINS,
+                             RU_BSLS, RU_SHTI, RU_TSE , RU_U   , RU_KA  , RU_IE  ,          RU_EN  , RU_GHE , RU_SHA , RU_SHCH, RU_ZE  , RU_EQL ,
+                             CW_TOGG, LRGUI_T, LRALT_T, LRCTL_T, LRSFT_T, RU_PE  ,          RU_ER  , RRSFT_T, RRCTL_T, RRALT_T, RRGUI_T, RU_E   ,
+                             KC_LSFT, RU_YA  , RU_CHE , RU_ES  , RU_EM  , RU_I   ,          RU_TE  , RU_SOFT, RU_BE  , RU_YU  , RU_DOT , KC_RSFT,
+                                               KC_PGUP, KC_PGDN,                                              RU_YO  , RU_HA  ,
+                                                          LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
+                                                          ),
+     */
 	[_CURSOR] = LAYOUT_5x6(
-                             QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          XXXXXXX   , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX   , XXXXXXX,
+                             QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          RUS_ENG   , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX   , XXXXXXX,
                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          LCTL(KC_X), KC_BSPC, KC_UP  , KC_DEL , LCTL(KC_Z), KC_INS ,
-                             RUS_ENG, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          LCTL(KC_C), KC_LEFT, KC_DOWN, KC_RGHT, LCTL(KC_Y), KC_PSCR,
+                             XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          LCTL(KC_C), KC_LEFT, KC_DOWN, KC_RGHT, LCTL(KC_Y), KC_PSCR,
                              STLT   , XXXXXXX, XXXXXXX, XXXXXXX, KC_APP , DB_TOGG,          LCTL(KC_V), KC_HOME, KC_PGUP, KC_END , LCTL(KC_F), LCTL(KC_H),
                                                XXXXXXX, XXXXXXX,                                                 KC_PGDN, LCTL(KC_G),
                                                           _______, XXXXXXX, XXXXXXX,     LCTL(KC_L), LCTL(KC_A), SELECT_WORD
@@ -127,17 +141,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                           KC_BTN1, KC_BTN2, KC_BTN3,     XXXXXXX, _______, XXXXXXX
                             ),
 	[_SYS] = LAYOUT_5x6(
-                             KC_PWR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                             KC_PWR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, T_ENGR ,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
-                             T_ENGR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          DB_TOGG, KC_APP , XXXXXXX, XXXXXXX, XXXXXXX, STLT   ,
+                             T_GAME , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          DB_TOGG, KC_APP , XXXXXXX, XXXXXXX, XXXXXXX, STLT   ,
                                                KC_WAKE, KC_SLEP,                                              XXXXXXX, XXXXXXX,
-                                                          XXXXXXX, KC_PAUS, XXXXXXX,     _______, XXXXXXX, XXXXXXX
-                            )
+                                                          XXXXXXX, KC_PAUS, TURBO,       _______, XXXXXXX, XXXXXXX
+                        ),
+
+	[_GAMING] = LAYOUT_5x6(
+                             KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS,
+                             KC_TAB , KC_Q   , KC_E   , KC_W   , KC_R   , KC_T   ,          KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_EQL ,
+                             KC_LSFT, KC_F   , KC_A   , KC_S   , KC_D   , KC_G   ,          KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN, KC_QUOT,
+                             KC_LCTL, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,          KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RSFT,
+                                               KC_PGUP, KC_PGDN,                                              KC_LBRC, KC_RBRC,
+                                                          LT_CURS, KC_LALT, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
+                           ),
 };
 
 void switch_system_layout(uint8_t the_layer) {
-  if ((system_language_id == _RUSSIAN && the_layer != _RUSSIAN) || (system_language_id!=_RUSSIAN && the_layer == _RUSSIAN)) {
+    if ((IS_LAYER_ON(_RUSSIAN) && the_layer != _RUSSIAN) || (IS_LAYER_OFF(_RUSSIAN) && the_layer == _RUSSIAN)) {
     const uint8_t mods = get_mods() | get_oneshot_mods();
     const bool is_shift_pressed = mods & MOD_MASK_SHIFT;
     if (is_shift_pressed) {
@@ -148,22 +171,96 @@ void switch_system_layout(uint8_t the_layer) {
     } else {
       tap_code(KC_CAPS);
     }
-    system_language_id = the_layer;
   }
 }
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-    current_layer_state=state;
-    return state;
-}
+/* #define TO_BINARY_PATTERN "%c%c%c%c%c%c Game:%c Sys:%c Mouse:%c Symb:%c Func:%c Numb:%c Curs:%c Russ:%c Engr:%c Qwer:%c" */
+/* #define TO_BINARY(byte)  \ */
+/* ((byte) & 0x01<<15 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<14 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<13 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<12 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<11 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<10 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<9 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<8 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<7 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<6 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<5 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<4 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<3 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<2 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<1 ? '1' : '0'), \ */
+/* ((byte) & 0x01<<0 ? '1' : '0') */
+
+/* void debug_state(uint16_t keycode, keyrecord_t* record, char* pre, char* post){ */
+/*     if (pre!=NULL) dprint(pre); */
+/*     dprintf("layer state: "TO_BINARY_PATTERN"\nkeycode: %x[%i]\n", */
+/*             TO_BINARY((uint16_t)layer_state), */
+/*             keycode, record->event.pressed */
+/*             ); */
+/*     dprintf("temporary_switch_off_russian_layer = %i\ntemporary_switch_off_gaming_layer = %i\n", */
+/*             temporary_switch_off_russian_layer, temporary_switch_off_gaming_layer); */
+/*     if (post!=NULL) dprint(post); */
+/* } */
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if (!process_caps_word(keycode, record)) { return false; }
     if (!process_select_word(keycode, record, SELECT_WORD)) { return false; }
+    if (!process_mouse_turbo_click(keycode, record, TURBO)) { return false; }
 
-    bool is_ru_layer = IS_LAYER_ON_STATE(current_layer_state, _RUSSIAN);
-    if (is_ru_layer) {
-        int switch_to_english = 0;
+    switch (keycode) {
+    // KC_CAPS change layout from latest used english to russian and back.
+    case RUS_ENG:
+        if (!record->event.pressed) {
+            if (IS_LAYER_ON(_RUSSIAN) || temporary_switch_off_russian_layer==1) {
+                if (temporary_switch_off_russian_layer==0)
+                    switch_system_layout(last_used_english_layer);
+                layer_move(last_used_english_layer);
+                temporary_switch_off_russian_layer=0;
+            } else {
+                switch_system_layout(_RUSSIAN);
+                layer_move(_RUSSIAN);
+            }
+        }
+        return false;
+    case T_GAME:
+        if (!record->event.pressed) {
+            if (IS_LAYER_ON(_GAMING) || temporary_switch_off_gaming_layer==1 ) {
+                if (temporary_switch_off_gaming_layer==0)
+                    switch_system_layout(last_used_english_layout);
+                layer_move(last_used_english_layout);
+                last_used_english_layer=last_used_english_layout;
+                temporary_switch_off_gaming_layer=0;
+            } else {
+                if(temporary_switch_off_russian_layer==1)
+                    temporary_switch_off_russian_layer=0;
+                switch_system_layout(_GAMING);
+                layer_move(_GAMING);
+                last_used_english_layer=_GAMING;
+            }
+        }
+        return false;
+    case T_ENGR:
+        if (!record->event.pressed) {
+            if (last_used_english_layer==_QWERTY) {
+                switch_system_layout(_ENGRAM);
+                last_used_english_layer=_ENGRAM;
+                last_used_english_layout=_ENGRAM;
+                layer_move(_ENGRAM);
+            } else {
+                switch_system_layout(_QWERTY);
+                last_used_english_layer=_QWERTY;
+                last_used_english_layout=_QWERTY;
+                layer_move(_QWERTY);
+            }
+        }
+        return false;
+    }
+
+    if (IS_LAYER_ON(_RUSSIAN) || temporary_switch_off_russian_layer==1 ||
+        IS_LAYER_ON(_GAMING) || temporary_switch_off_gaming_layer==1) {
+        int switch_layer = 0;
         switch (keycode) {
         case LT_CURS:
         case LT_FUNC:
@@ -171,50 +268,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         case LT_NUMB:
         case LT_SYMB:
         case LT_SYST:
-            switch_to_english=1;
+            switch_layer=1;
             break;
-        default:
-            const uint8_t mods = get_mods() | get_oneshot_mods();
-            if(mods & MOD_MASK_ALT || mods & MOD_MASK_CTRL || mods & MOD_MASK_GUI) {
-                switch_to_english=1;
-            }
-            break;
+        /* default: */
+        /*     const uint8_t mods = get_mods() | get_oneshot_mods(); */
+        /*     if(mods & MOD_MASK_ALT || mods & MOD_MASK_CTRL || mods & MOD_MASK_GUI) { */
+        /*         switch_to_english=1; */
+        /*     } */
+        /*     break; */
         }
-        if (switch_to_english) {
+        if (switch_layer) {
             if (record->event.pressed) {
-                switch_system_layout(last_used_english_layer);
+                if (IS_LAYER_ON(_RUSSIAN)) {
+                    switch_system_layout(last_used_english_layer);
+                    layer_off(_RUSSIAN);
+                    layer_on(last_used_english_layer);
+                    temporary_switch_off_russian_layer=1;
+                }
+                if (IS_LAYER_ON(_GAMING)) {
+                    layer_off(_GAMING);
+                    layer_on(last_used_english_layout);
+                    temporary_switch_off_gaming_layer=1;
+                }
             } else {
-                switch_system_layout(_RUSSIAN);
+                if (temporary_switch_off_russian_layer==1) {
+                    switch_system_layout(_RUSSIAN);
+                    layer_on(_RUSSIAN);
+                    layer_off(last_used_english_layer);
+                    temporary_switch_off_russian_layer=0;
+                }
+                if(temporary_switch_off_gaming_layer==1) {
+                    layer_on(_GAMING);
+                    layer_off(last_used_english_layout);
+                    temporary_switch_off_gaming_layer=0;
+                }
             }
         }
-    }
-
-    switch (keycode) {
-    // KC_CAPS change layout from latest used english to russian and back.
-    case RUS_ENG:
-        if (!record->event.pressed) {
-            if (is_ru_layer) {
-                switch_system_layout(last_used_english_layer);
-            } else {
-                switch_system_layout(_RUSSIAN);
-            }
-        }
-        break;
-    case T_ENGR:
-        if (!record->event.pressed) {
-            if (last_used_english_layer==_QWERTY) {
-                switch_system_layout(_ENGRAM);
-                last_used_english_layer=_ENGRAM;
-                layer_off(_QWERTY);
-                layer_on(_ENGRAM);
-            } else {
-                switch_system_layout(_QWERTY);
-                last_used_english_layer=_QWERTY;
-                layer_off(_ENGRAM);
-                layer_on(_QWERTY);
-            }
-        }
-        break;
     }
 
     // handle sticky holding of Miryoku thumb cluster layer-taps as toggles
@@ -413,6 +502,11 @@ bool rgb_matrix_indicators_user(void) {
     if (IS_LAYER_ON(_RUSSIAN)) {
         rgb_matrix_set_color( LEFT_THUMB_CLUSTER_HOME, EXTRA_LAYER_COLOR);
         rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_HOME, EXTRA_LAYER_COLOR);
+    }
+
+    if (IS_LAYER_ON(_GAMING)) {
+        rgb_matrix_set_color( LEFT_THUMB_CLUSTER_OUTER, EXTRA_LAYER_COLOR);
+        rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_OUTER, EXTRA_LAYER_COLOR);
     }
 
     if (host_keyboard_led_state().caps_lock) {

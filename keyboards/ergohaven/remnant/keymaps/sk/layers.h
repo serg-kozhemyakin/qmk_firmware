@@ -12,5 +12,6 @@ enum layers {
     _FKEYS,
     _SYMBOLS,
     _MOUSE,
-    _SYS
+    _SYS,
+    _GAMING
 };

@@ -101,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ),
      */
 	[_CURSOR] = LAYOUT_5x6(
-        QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          RUS_ENG   , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX   , XXXXXXX,
+        QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          XXXXXXX   , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX   , XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          LCTL(KC_X), KC_BSPC, KC_UP  , KC_DEL , LCTL(KC_Z), KC_INS ,
         XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          LCTL(KC_C), KC_LEFT, KC_DOWN, KC_RGHT, LCTL(KC_Y), KC_PSCR,
         STLT   , XXXXXXX, XXXXXXX, XXXXXXX, KC_APP , DB_TOGG,          LCTL(KC_V), KC_HOME, KC_PGUP, KC_END , LCTL(KC_F), LCTL(KC_H),
@@ -141,10 +141,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      KC_BTN1, KC_BTN2, KC_BTN3,     XXXXXXX, _______, XXXXXXX
         ),
 	[_SYS] = LAYOUT_5x6(
-        KC_PWR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, T_ENGR ,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+        KC_PWR , XXXXXXX, XXXXXXX, T_GAME , T_ENGR , RUS_ENG,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
-        T_GAME , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          DB_TOGG, KC_APP , XXXXXXX, XXXXXXX, XXXXXXX, STLT   ,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          DB_TOGG, KC_APP , XXXXXXX, XXXXXXX, XXXXXXX, STLT   ,
                           KC_WAKE, KC_SLEP,                                              XXXXXXX, XXXXXXX,
                                      XXXXXXX, KC_PAUS, TURBO,       _______, XXXXXXX, XXXXXXX
         ),
@@ -154,7 +154,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT, KC_F   , KC_A   , KC_S   , KC_D   , KC_G   ,          KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN, KC_QUOT,
         KC_LCTL, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,          KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RSFT,
                           KC_PGUP, KC_PGDN,                                              KC_LBRC, KC_RBRC,
-                                     KC_SPC , KC_LALT, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
+                                     KC_SPC , KC_LALT, LT_FUNC,     LT_SYST, KC_BSPC, LT_SYMB
         ),
 };
 

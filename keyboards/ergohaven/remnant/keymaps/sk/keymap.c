@@ -50,10 +50,10 @@ enum custom_keycodes {
 #define LECTL_T LCTL_T(KC_E)
 #define LESFT_T LSFT_T(KC_A)
 
-#define RESFT_T RGUI_T(KC_H)
-#define RECTL_T RALT_T(KC_T)
-#define REALT_T RCTL_T(KC_S)
-#define REGUI_T RSFT_T(KC_N)
+#define RESFT_T RSFT_T(KC_H)
+#define RECTL_T RCTL_T(KC_T)
+#define REALT_T RALT_T(KC_S)
+#define REGUI_T RGUI_T(KC_N)
 
 // other layers
 #define LT_CURS LT(_CURSOR,KC_BSPC)
@@ -116,7 +116,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                           XXXXXXX, XXXXXXX,                                              KC_LPRN, KC_RPRN,
                                      XXXXXXX, _______, XXXXXXX,     KC_COMM, KC_DOT, KC_0
         ),
-	[_FKEYS] = LAYOUT_5x6(
+ 	[_FKEYS] = LAYOUT_5x6(
         QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          KC_MSEL, KC_MPLY, KC_MPRV, KC_MNXT, KC_MSTP, KC_EJCT,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          KC_WHOM, KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F13,
         KC_SCRL, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          KC_CALC, KC_F4  , KC_F5  , KC_F6  , KC_F11 , KC_F14,

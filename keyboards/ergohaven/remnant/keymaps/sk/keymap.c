@@ -7,8 +7,8 @@
 #include "features/select_word.h"
 #include "features/mouse_turbo_click.h"
 
-static layer_state_t last_used_english_layer = _QWERTY;
-static layer_state_t last_used_english_layout = _QWERTY;
+static layer_state_t last_used_english_layer = _ENGRAM;
+static layer_state_t last_used_english_layout = _ENGRAM;
 static int temporary_switch_off_russian_layer = 0;
 static int temporary_switch_off_gaming_layer = 0;
 
@@ -66,14 +66,6 @@ enum custom_keycodes {
 #define STLT STICKY_LAYER_TOGGLE
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[_QWERTY] = LAYOUT_5x6(
-        KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS,
-        KC_BSLS, KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   ,          KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_EQL ,
-        CW_TOGG, L_GUI_T, L_ALT_T, L_CTL_T, L_SFT_T, KC_G   ,          KC_H   , R_SFT_T, R_CTL_T, R_ALT_T, R_GUI_T, KC_QUOT,
-        KC_LSFT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,          KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RSFT,
-                          KC_PGUP, KC_PGDN,                                              KC_LBRC, KC_RBRC,
-                                     LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
-        ),
 	[_ENGRAM] = LAYOUT_5x6(
         KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_EQL ,
         KC_BSLS, KC_B   , KC_Y   , KC_O   , KC_U   , KC_QUOT,          KC_SCLN, KC_L   , KC_D   , KC_W   , KC_V   , KC_Z   ,
@@ -82,16 +74,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                           KC_PGUP, KC_PGDN,                                              KC_LBRC, KC_RBRC,
                                      LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
         ),
+	[_QWERTY] = LAYOUT_5x6(
+        KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS,
+        KC_BSLS, KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   ,          KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_EQL ,
+        CW_TOGG, L_GUI_T, L_ALT_T, L_CTL_T, L_SFT_T, KC_G   ,          KC_H   , R_SFT_T, R_CTL_T, R_ALT_T, R_GUI_T, KC_QUOT,
+        KC_LSFT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,          KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RSFT,
+                          KC_PGUP, KC_PGDN,                                              KC_LBRC, KC_RBRC,
+                                     LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
+        ),
 	[_RUSSIAN] = LAYOUT_5x6(
         RU_HARD, RU_1   , RU_2   , RU_3   , RU_4   , RU_5   ,          RU_6   , RU_7   , RU_8   , RU_9   , RU_0   , RU_MINS,
-        RU_BSLS, RU_SHTI, RU_TSE , RU_U   , RU_KA  , RU_IE  ,          RU_EN  , RU_GHE , RU_SHA , RU_SHCH, RU_ZE  , RU_EQL ,
+        RU_BSLS, RU_SHTI, RU_TSE , RU_U   , RU_KA  , RU_IE  ,          RU_EN  , RU_GHE , RU_SHA , RU_SHCH, RU_ZE  , RU_HA ,
         CW_TOGG, LRGUI_T, LRALT_T, LRCTL_T, LRSFT_T, RU_PE  ,          RU_ER  , RRSFT_T, RRCTL_T, RRALT_T, RRGUI_T, RU_E   ,
         KC_LSFT, RU_YA  , RU_CHE , RU_ES  , RU_EM  , RU_I   ,          RU_TE  , RU_SOFT, RU_BE  , RU_YU  , RU_DOT , KC_RSFT,
-                          KC_PGUP, KC_PGDN,                                              RU_YO  , RU_HA  ,
+                          KC_PGUP, KC_PGDN,                                              RU_YO  , RU_EQL  ,
                                      LT_CURS, LT_NUMB, LT_FUNC,     LT_SYST, LT_MOUS, LT_SYMB
         ),
     /*
-	[_RUSENGR] = LAYOUT_5x6(
+        БУКЛ  –(    —)   ДГЗХЦ
+        ЫВАЕ  ,;    .:   НОСТЁ
+        ЙЧИЯ  -_    ?!   РМПЖ
+         Ш                ЩЮ
+              Ъ@  Ь#
+              «„  »“
+        [_RUSENGR] = LAYOUT_5x6(
         RU_HARD, RU_1   , RU_2   , RU_3   , RU_4   , RU_5   ,          RU_6   , RU_7   , RU_8   , RU_9   , RU_0   , RU_MINS,
         RU_BSLS, RU_SHTI, RU_TSE , RU_U   , RU_KA  , RU_IE  ,          RU_EN  , RU_GHE , RU_SHA , RU_SHCH, RU_ZE  , RU_EQL ,
         CW_TOGG, LRGUI_T, LRALT_T, LRCTL_T, LRSFT_T, RU_PE  ,          RU_ER  , RRSFT_T, RRCTL_T, RRALT_T, RRGUI_T, RU_E   ,
@@ -265,7 +271,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     }
 
     if (IS_LAYER_ON(_RUSSIAN) || temporary_switch_off_russian_layer==1 ||
-            IS_LAYER_ON(_GAMING) || temporary_switch_off_gaming_layer==1) {
+        IS_LAYER_ON(_GAMING) || temporary_switch_off_gaming_layer==1) {
         int switch_layer = 0;
         switch (keycode) {
         case LT_CURS:
@@ -284,29 +290,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             /*     break; */
         }
         if (switch_layer) {
-            if (record->event.pressed) {
-                if (IS_LAYER_ON(_RUSSIAN)) {
-                    switch_system_layout(last_used_english_layer);
-                    layer_off(_RUSSIAN);
-                    layer_on(last_used_english_layer);
-                    temporary_switch_off_russian_layer=1;
-                }
-                if (IS_LAYER_ON(_GAMING)) {
-                    layer_off(_GAMING);
-                    layer_on(last_used_english_layout);
-                    temporary_switch_off_gaming_layer=1;
-                }
-            } else {
-                if (temporary_switch_off_russian_layer==1) {
-                    switch_system_layout(_RUSSIAN);
-                    layer_on(_RUSSIAN);
-                    layer_off(last_used_english_layer);
-                    temporary_switch_off_russian_layer=0;
-                }
-                if(temporary_switch_off_gaming_layer==1) {
-                    layer_on(_GAMING);
-                    layer_off(last_used_english_layout);
-                    temporary_switch_off_gaming_layer=0;
+            if (record->tap.count == 0) {  // Key is being held.
+                if (record->event.pressed) {
+                    if (IS_LAYER_ON(_RUSSIAN)) {
+                        switch_system_layout(last_used_english_layer);
+                        layer_off(_RUSSIAN);
+                        layer_on(last_used_english_layer);
+                        temporary_switch_off_russian_layer=1;
+                    }
+                    if (IS_LAYER_ON(_GAMING)) {
+                        layer_off(_GAMING);
+                        layer_on(last_used_english_layout);
+                        temporary_switch_off_gaming_layer=1;
+                    }
+                } else {
+                    if (temporary_switch_off_russian_layer==1) {
+                        switch_system_layout(_RUSSIAN);
+                        layer_on(_RUSSIAN);
+                        layer_off(last_used_english_layer);
+                        temporary_switch_off_russian_layer=0;
+                    }
+                    if(temporary_switch_off_gaming_layer==1) {
+                        layer_on(_GAMING);
+                        layer_off(last_used_english_layout);
+                        temporary_switch_off_gaming_layer=0;
+                    }
                 }
             }
         }
@@ -331,14 +339,14 @@ void keyboard_post_init_user(void) {
     /* debug_keyboard=true; */
     //debug_mouse=true;
 
+    /*
     // https://docs.qmk.fm/#/feature_rgb_matrix?id=rgb-matrix-effects
     // set initial effect on keyboard start; ignore what's in EEPROM!
     rgb_matrix_mode_noeeprom(
         // RGB_MATRIX_TYPING_HEATMAP
         RGB_MATRIX_SOLID_REACTIVE_SIMPLE
     );
-
-    /*
+    */
       // https://docs.qmk.fm/#/feature_rgb_matrix?id=indicators-without-rgb-matrix-effect
       //
       // Indicators without RGB Matrix Effect
@@ -352,7 +360,6 @@ void keyboard_post_init_user(void) {
       // rgb_matrix_sethsv_noeeprom(HSV_OFF); // XXX: this throws away the color!
       HSV hsv = rgb_matrix_get_hsv();
       rgb_matrix_sethsv_noeeprom(hsv.h, hsv.s, 0); // turn off, preserving color
-     */
 }
 
 // dim indicator colors by this much (default is MAX brightness!)
@@ -500,7 +507,7 @@ bool rgb_matrix_indicators_user(void) {
         break;
     }
 
-    if (IS_LAYER_ON(_ENGRAM)) {
+    if (IS_LAYER_ON(_QWERTY)) {
         rgb_matrix_set_color( LEFT_THUMB_CLUSTER_INNER, EXTRA_LAYER_COLOR);
         rgb_matrix_set_color(RIGHT_THUMB_CLUSTER_INNER, EXTRA_LAYER_COLOR);
     }

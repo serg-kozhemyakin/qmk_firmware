@@ -4,8 +4,8 @@
 #include "keymap_russian.h"
 
 enum layers {
-    _QWERTY,
     _ENGRAM,
+    _QWERTY,
     _RUSSIAN,
     _CURSOR,
     _NUMBERS,

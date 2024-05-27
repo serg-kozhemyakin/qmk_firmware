@@ -31,3 +31,6 @@
 [submodule "keyboards/ergohaven/remnant/keymaps/sk/getreuer"]
 	path = keyboards/ergohaven/remnant/keymaps/sk/getreuer
 	url = https://github.com/getreuer/qmk-keymap
+[submodule "keyboards/ergohaven/hpd/keymaps/sk/getreuer"]
+	path = keyboards/ergohaven/hpd/keymaps/sk/getreuer
+	url = https://github.com/getreuer/qmk-keymap

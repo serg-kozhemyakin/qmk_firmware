@@ -6,7 +6,6 @@
 enum layers {
     _ENGRAM,
     _QWERTY,
-    _GAMING,
     _RUSSIAN,
     _CURSOR,
     _NUMBERS,
@@ -14,4 +13,5 @@ enum layers {
     _SYMBOLS,
     _MOUSE,
     _SYS,
+    _GAMING,
 };

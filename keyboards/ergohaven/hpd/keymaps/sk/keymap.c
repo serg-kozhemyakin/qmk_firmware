@@ -55,8 +55,8 @@ enum custom_keycodes {
 #define REGUI_T RGUI_T(KC_N)
 
 // other layers
-#define LT_CURS LT(_CURSOR,KC_DEL)
-#define LT_NUMB LT(_NUMBERS,KC_BSPC)
+#define LT_CURS LT(_CURSOR,KC_BSPC)
+#define LT_NUMB LT(_NUMBERS,KC_DEL)
 #define LT_FUNC LT(_FKEYS,KC_ESC)
 #define LT_SYST LT(_SYS,KC_ENT)
 #define LT_MOUS LT(_MOUSE,KC_SPC)
@@ -92,42 +92,42 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, T_ENGR , T_GAME ,          LCTL(KC_X), KC_BSPC, KC_UP  , KC_DEL , LCTL(KC_Z), KC_INS ,
         XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          LCTL(KC_C), KC_LEFT, KC_DOWN, KC_RGHT, LCTL(KC_Y), KC_PSCR,
         STLT   , XXXXXXX, XXXXXXX, XXXXXXX, KC_APP , DB_TOGG,          LCTL(KC_V), KC_HOME, KC_PGUP, KC_END , LCTL(KC_F), LCTL(KC_H),
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, LCTL(KC_L), LCTL(KC_A), SELECT_WORD, KC_PGDN, LCTL(KC_G)
+        XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, LCTL(KC_L), LCTL(KC_A), SELECT_WORD, KC_PGDN, LCTL(KC_G)
         ),
 	[_NUMBERS] = LAYOUT(
         QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          KC_TILD, KC_CIRC, KC_HASH, KC_DLR , KC_AT  , KC_EXLM,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          KC_PERC, KC_7   , KC_8   , KC_9   , KC_COLN, KC_LT,
         KC_NUM , KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          KC_PPLS, KC_4   , KC_5   , KC_6   , KC_PMNS, KC_GT,
         STLT   , XXXXXXX, XXXXXXX, XXXXXXX, KC_APP , DB_TOGG,          KC_PAST, KC_1   , KC_2   , KC_3   , KC_PSLS, KC_PEQL,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, KC_COMM, KC_DOT , KC_0   , KC_LPRN, KC_RPRN
+        XXXXXXX, XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX,          XXXXXXX, KC_COMM, KC_DOT , KC_0   , KC_LPRN, KC_RPRN
         ),
  	[_FKEYS] = LAYOUT(
         QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR ,          KC_MSEL, KC_MPLY, KC_MPRV, KC_MNXT, KC_MSTP, KC_EJCT,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          KC_WHOM, KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F13,
         KC_SCRL, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,          KC_CALC, KC_F4  , KC_F5  , KC_F6  , KC_F11 , KC_F14,
         STLT   , XXXXXXX, XXXXXXX, XXXXXXX, KC_APP , DB_TOGG,          KC_MYCM, KC_F1  , KC_F2  , KC_F3  , KC_F12 , KC_F15,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, KC_MUTE, KC_VOLD, KC_VOLU, KC_BRID, KC_BRIU
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______, XXXXXXX,          XXXXXXX, KC_MUTE, KC_VOLD, KC_VOLU, KC_BRID, KC_BRIU
         ),
 	[_SYMBOLS] = LAYOUT(
         KC_TILD, KC_COMM, KC_LPRN, KC_RPRN, KC_SCLN, KC_QUES,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
         KC_AT  , KC_LCBR, KC_DQUO, KC_QUOT, KC_RCBR, KC_DOT ,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         KC_HASH, KC_CIRC, KC_EQL , KC_UNDS, KC_DLR , KC_ASTR,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
         KC_EXLM, KC_LT  , KC_PIPE, KC_MINS, KC_GT  , KC_SLSH,          DB_TOGG, KC_APP , XXXXXXX, XXXXXXX, XXXXXXX, STLT   ,
-        KC_AMPR, KC_PLUS, KC_BSLS, KC_COLN, KC_PERC, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC, KC_RBRC
+        KC_AMPR, KC_PLUS, KC_BSLS, KC_COLN, KC_PERC, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, _______, KC_LBRC, KC_RBRC
         ),
 	[_MOUSE] = LAYOUT(
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
         XXXXXXX, KC_ACL2, KC_WH_L, KC_MS_U, KC_WH_R, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         XXXXXXX, KC_ACL0, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
         XXXXXXX, KC_ACL1, XXXXXXX, KC_BTN4, KC_BTN5, XXXXXXX,          DB_TOGG, KC_APP , XXXXXXX, XXXXXXX, XXXXXXX, STLT   ,
-        KC_WH_U, KC_WH_D, KC_BTN1, KC_BTN2, KC_BTN3, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
+        KC_WH_U, KC_WH_D, KC_BTN1, KC_BTN2, KC_BTN3, XXXXXXX,          XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX, XXXXXXX
         ),
 	[_SYS] = LAYOUT(
         KC_PWR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          EE_CLR , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          DB_TOGG, KC_APP , XXXXXXX, XXXXXXX, XXXXXXX, STLT   ,
-        KC_WAKE, KC_SLEP, XXXXXXX, KC_PAUS, TURBO  , XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
+        KC_WAKE, KC_SLEP, XXXXXXX, KC_PAUS, TURBO  , XXXXXXX,          XXXXXXX, _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
         ),
 	[_GAMING] = LAYOUT(
         KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,          KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS,
@@ -138,8 +138,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ),
 };
 
-void switch_system_layout(uint8_t the_layer) {
-    if ((IS_LAYER_ON(_RUSSIAN) && the_layer != _RUSSIAN) || (IS_LAYER_OFF(_RUSSIAN) && the_layer == _RUSSIAN)) {
+void switch_system_layout() {
     const uint8_t mods = get_mods() | get_oneshot_mods();
     const bool is_shift_pressed = mods & MOD_MASK_SHIFT;
     if (is_shift_pressed) {
@@ -150,40 +149,51 @@ void switch_system_layout(uint8_t the_layer) {
     } else {
       tap_code(KC_CAPS);
     }
-  }
 }
 
-/* #define TO_BINARY_PATTERN "%c%c%c%c%c%c Game:%c Sys:%c Mouse:%c Symb:%c Func:%c Numb:%c Curs:%c Russ:%c Engr:%c Qwer:%c" */
-/* #define TO_BINARY(byte)  \ */
-/* ((byte) & 0x01<<15 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<14 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<13 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<12 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<11 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<10 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<9 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<8 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<7 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<6 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<5 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<4 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<3 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<2 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<1 ? '1' : '0'), \ */
-/* ((byte) & 0x01<<0 ? '1' : '0') */
+#define TO_BINARY_PATTERN "%c%c%c%c%c%c Game:%c Sys:%c Mouse:%c Symb:%c Func:%c Numb:%c Curs:%c Russ:%c Engr:%c Qwer:%c"
+#define TO_BINARY(byte)  \
+((byte) & 0x01<<15 ? '1' : '0'), \
+((byte) & 0x01<<14 ? '1' : '0'), \
+((byte) & 0x01<<13 ? '1' : '0'), \
+((byte) & 0x01<<12 ? '1' : '0'), \
+((byte) & 0x01<<11 ? '1' : '0'), \
+((byte) & 0x01<<10 ? '1' : '0'), \
+((byte) & 0x01<<9 ? '1' : '0'), \
+((byte) & 0x01<<8 ? '1' : '0'), \
+((byte) & 0x01<<7 ? '1' : '0'), \
+((byte) & 0x01<<6 ? '1' : '0'), \
+((byte) & 0x01<<5 ? '1' : '0'), \
+((byte) & 0x01<<4 ? '1' : '0'), \
+((byte) & 0x01<<3 ? '1' : '0'), \
+((byte) & 0x01<<2 ? '1' : '0'), \
+((byte) & 0x01<<1 ? '1' : '0'), \
+((byte) & 0x01<<0 ? '1' : '0')
 
-/* void debug_state(uint16_t keycode, keyrecord_t* record, char* pre, char* post){ */
-/*     if (pre!=NULL) dprint(pre); */
-/*     dprintf("layer state: "TO_BINARY_PATTERN"\nkeycode: %x[%i]\n", */
-/*             TO_BINARY((uint16_t)layer_state), */
-/*             keycode, record->event.pressed */
-/*             ); */
-/*     dprintf("temporary_switch_off_russian_layer = %i\ntemporary_switch_off_gaming_layer = %i\n", */
-/*             temporary_switch_off_russian_layer, temporary_switch_off_gaming_layer); */
-/*     if (post!=NULL) dprint(post); */
-/* } */
+void debug_state(uint16_t keycode, keyrecord_t* record, char* pre, char* post){
+    if (pre!=NULL) dprint(pre);
+    dprintf("layer state: "TO_BINARY_PATTERN"\nkeycode: %x[%i]\n",
+            TO_BINARY((uint16_t)layer_state),
+            keycode, record->event.pressed
+            );
+    dprintf("temporary_switch_off_russian_layer = %i\ntemporary_switch_off_gaming_layer = %i\n",
+            temporary_switch_off_russian_layer, temporary_switch_off_gaming_layer);
+    if (post!=NULL) dprint(post);
+}
+
+void keyboard_post_init_user(void) {
+  // Customise these values to desired behaviour
+  debug_enable=true;
+  //debug_matrix=true;
+  debug_keyboard=true;
+  //debug_mouse=true;
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+    #ifdef CONSOLE_ENABLE
+    //debug_state(keycode,record,"","---");
+    dprintf("\nPROCESS: %x %i\n",keycode,record->event.pressed);
+    #endif
     if (!process_caps_word(keycode, record)) {
         return false;
     }
@@ -201,7 +211,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         if (!record->event.pressed) {
             if (IS_LAYER_ON(_RUSSIAN) || temporary_switch_off_russian_layer==1) {
                 if (temporary_switch_off_russian_layer==0)
-                    switch_system_layout(last_used_english_layer);
+                    switch_system_layout();
                 layer_move(last_used_english_layer);
                 temporary_switch_off_russian_layer=0;
             } else {
@@ -214,14 +224,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         if (!record->event.pressed) {
             if (IS_LAYER_ON(_GAMING) || temporary_switch_off_gaming_layer==1 ) {
                 if (temporary_switch_off_gaming_layer==0)
-                    switch_system_layout(last_used_english_layout);
+                    switch_system_layout();
                 layer_move(last_used_english_layout);
                 last_used_english_layer=last_used_english_layout;
                 temporary_switch_off_gaming_layer=0;
             } else {
                 if(temporary_switch_off_russian_layer==1)
                     temporary_switch_off_russian_layer=0;
-                switch_system_layout(_GAMING);
+                switch_system_layout();
                 layer_move(_GAMING);
                 last_used_english_layer=_GAMING;
             }
@@ -232,16 +242,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             if (temporary_switch_off_gaming_layer==1)
                 temporary_switch_off_gaming_layer=0;
             if (last_used_english_layer==_QWERTY) {
-                switch_system_layout(_ENGRAM);
                 last_used_english_layer=_ENGRAM;
                 last_used_english_layout=_ENGRAM;
-                layer_move(_ENGRAM);
             } else {
-                switch_system_layout(_QWERTY);
                 last_used_english_layer=_QWERTY;
                 last_used_english_layout=_QWERTY;
-                layer_move(_QWERTY);
             }
+            if(IS_LAYER_ON(_QWERTY) || IS_LAYER_ON(_ENGRAM))
+              layer_move(last_used_english_layer);
         }
         return false;
     }
@@ -269,26 +277,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             if (record->tap.count == 0) {  // Key is being held.
                 if (record->event.pressed) {
                     if (IS_LAYER_ON(_RUSSIAN)) {
-                        switch_system_layout(last_used_english_layer);
-                        layer_off(_RUSSIAN);
-                        layer_on(last_used_english_layer);
+                        switch_system_layout();
                         temporary_switch_off_russian_layer=1;
                     }
                     if (IS_LAYER_ON(_GAMING)) {
-                        layer_off(_GAMING);
-                        layer_on(last_used_english_layout);
                         temporary_switch_off_gaming_layer=1;
                     }
                 } else {
                     if (temporary_switch_off_russian_layer==1) {
-                        switch_system_layout(_RUSSIAN);
-                        layer_on(_RUSSIAN);
-                        layer_off(last_used_english_layer);
+                        switch_system_layout();
                         temporary_switch_off_russian_layer=0;
                     }
-                    if(temporary_switch_off_gaming_layer==1) {
-                        layer_on(_GAMING);
-                        layer_off(last_used_english_layout);
+                    if (temporary_switch_off_gaming_layer==1) {
                         temporary_switch_off_gaming_layer=0;
                     }
                 }
@@ -299,6 +299,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     // handle sticky holding of Miryoku thumb cluster layer-taps as toggles
     if (keycode == STICKY_LAYER_TOGGLE && record->event.pressed) {
         default_layer_set(default_layer_state ? 0 : (1 << get_highest_layer(layer_state)));
+        return false;
     }
 
     return true;
